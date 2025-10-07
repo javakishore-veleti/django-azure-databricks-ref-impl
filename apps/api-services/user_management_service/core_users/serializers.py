@@ -5,7 +5,7 @@ from core_users.models import AppUser, AppUserProfile
 class AppUserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppUserProfile
-        fields = ['id', 'bio', 'profile_picture']
+        fields = ['id', 'bio']
 
 
 class UserSerializer(serializers.ModelSerializer):

@@ -42,6 +42,7 @@ python-dotenv
 cryptography
 django_extensions
 
-
+# Swagger
+drf-yasg
 
 
