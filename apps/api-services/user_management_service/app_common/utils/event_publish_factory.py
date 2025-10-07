@@ -1,4 +1,6 @@
 from django.conf import settings
+
+from .dummy_event_publisher import DummyEventPublisher
 from .kafka_event_publisher import KafkaEventPublisher
 from .azure_event_publisher import AzureEventHubPublisher
 from .event_publisher_interface import EventPublisher
@@ -38,6 +40,10 @@ class EventPublishFactory:
                 kafka_bootstrap_servers=settings.KAFKA_BOOTSTRAP_SERVERS,
                 eventhub_name=event_hub_name
             )
+        else:
+            publisher = DummyEventPublisher(eventhub_name=event_hub_name)
+
+
 
         # Cache the publisher object
         EventPublishFactory._cache[cache_key] = publisher

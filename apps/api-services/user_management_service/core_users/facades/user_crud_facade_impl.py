@@ -1,6 +1,12 @@
+import json
+import uuid
+
+from django.db import IntegrityError
+
 from app_common.facades.interfaces import AppUserFacadeInterface
+from app_common.utils.event_publish_factory import EventPublishFactory
 from core_users.models import AppUser, AppUserProfile
-from app_common.dtos.dtos_users import UserCrudReq, UserCrudResp
+from app_common.dtos.dtos_users import UserCrudReq, UserCrudResp, UserEventInfo
 
 
 class UserCrudFacadeImpl(AppUserFacadeInterface):
@@ -27,7 +33,7 @@ class UserCrudFacadeImpl(AppUserFacadeInterface):
             user_resp.user_profile_by_id = app_user_profile
             return user_resp
         except AppUser.DoesNotExist:
-            return None  # Handle user not found
+            return UserCrudResp()  # Handle user not found
 
     def create_user(self, user_data: dict) -> UserCrudResp:
         """
@@ -50,8 +56,22 @@ class UserCrudFacadeImpl(AppUserFacadeInterface):
             is_active=user_crud_req.is_active
         )
 
+        username = user_crud_req.username
+        email = user_crud_req.email
+        # Integrity checks
+        """
+        # Check if username or email already exists
+        if AppUser.objects.filter(username=username).exists():
+            raise IntegrityError(f"Username '{username}' already exists.")
+        if AppUser.objects.filter(email=email).exists():
+            raise IntegrityError(f"Email '{email}' already exists.")
+        """
+
         # Create a profile for the user
         app_user_profile = AppUserProfile.objects.create(user=app_user)
+
+        # Publish CREATE event
+        self._publish_user_event("CREATE", app_user)
 
         # Return the response object
         return UserCrudResp(
@@ -81,6 +101,9 @@ class UserCrudFacadeImpl(AppUserFacadeInterface):
             app_user_profile = AppUserProfile.objects.get(user=app_user)
             app_user_profile.save()  # Save any changes to the profile if necessary
 
+            # Publish UPDATE event
+            self._publish_user_event("UPDATE", app_user)
+
             # Return updated response
             return UserCrudResp(
                 user_id=app_user.id,
@@ -101,6 +124,33 @@ class UserCrudFacadeImpl(AppUserFacadeInterface):
         try:
             app_user = AppUser.objects.get(id=user_id)
             app_user.delete()  # Deletes both user and related profile (if cascade delete is set)
+
+            # Publish DELETE event before deletion (for audit)
+            self._publish_user_event("DELETE", app_user)
+
             return True
         except AppUser.DoesNotExist:
             return False  # Handle user not found
+
+    def _publish_user_event(self, event_type: str, app_user: AppUser):
+        """Helper to publish user-related events."""
+        # Prepare payload
+        user_dict = {
+            "user_id": app_user.id,
+            "email": app_user.email,
+            "username": app_user.username,
+            "first_name": app_user.first_name,
+            "last_name": app_user.last_name,
+            "is_active": app_user.is_active,
+            "date_joined": app_user.date_joined.isoformat() if app_user.date_joined else None
+        }
+
+        # Create event info
+        user_event = UserEventInfo(event_type=event_type, app_user_dict=user_dict)
+
+        # Get publisher instance from factory (auto-selects Kafka or Azure Event Hub)
+        publisher = EventPublishFactory.get_event_publisher(event_hub_name="user_updates",
+                                                            reference_id=str(uuid.uuid4()))
+
+        # Publish serialized event payload
+        publisher.publish_event(event_type, json.dumps(user_event.to_json()))

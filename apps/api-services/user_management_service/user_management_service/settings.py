@@ -20,7 +20,7 @@ USE_AZURE = os.getenv('USE_AZURE', 'False') == 'True'
 USE_KAFKA = os.getenv('USE_KAFKA', 'False') == 'True'
 
 # Get Event Hub names from environment variable, applicable for both Azure and Kafka
-EVENT_HUB_NAMES = os.getenv('EVENT_HUB_NAMES', 'event_hub_name_1,event_hub_name_2').split(',')
+EVENT_HUB_NAMES = os.getenv('EVENT_HUB_NAMES', 'user_updates,event_hub_name_1,event_hub_name_2').split(',')
 
 # Azure Event Hub connection details
 AZURE_EVENT_HUB_CONNECTION_STRING = os.getenv('AZURE_EVENT_HUB_CONNECTION_STRING', 'your_azure_connection_string')

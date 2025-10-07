@@ -9,8 +9,8 @@ class AzureEventHubPublisher(EventPublisher):
         )
         self.eventhub_name = eventhub_name
 
-    def publish_event(self, event_type: str, user_id: str):
-        event_data = EventData(f'{event_type}:{user_id}')
+    def publish_event(self, event_type: str, event_data: str):
+        event_data = EventData(f'{event_type}:{event_data}')
         event_data_batch = self.producer.create_batch()
         event_data_batch.add(event_data)
         self.producer.send_batch(event_data_batch)

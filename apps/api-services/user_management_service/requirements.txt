@@ -45,4 +45,11 @@ django_extensions
 # Swagger
 drf-yasg
 
+# --- Local Kafka Dependencies ---
+kafka-python
+
+azure-eventhub
+azure-storage-blob
+azure-mgmt-datalake-store
+
 
