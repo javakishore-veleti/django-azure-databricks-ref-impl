@@ -1,0 +1,10 @@
+{
+  "name": "ser_management_service_django_azure_databricks_ref_implementation",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Django Azure Databricks Ref Impl API",
+  "scripts": {
+    "local-dev-stack:up": "bash devops/local-development/tech_stack_up.sh",
+    "local-dev-stack:down": "bash devops/local-development/tech_stack_down.sh"
+  }
+}

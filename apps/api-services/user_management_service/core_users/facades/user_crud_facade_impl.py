@@ -49,6 +49,7 @@ class UserCrudFacadeImpl(AppUserFacadeInterface):
 
         # Create the user
         app_user = AppUser.objects.create(
+            id=str(uuid.uuid4()),
             email=user_crud_req.email,
             username=user_crud_req.username,
             first_name=user_crud_req.first_name,

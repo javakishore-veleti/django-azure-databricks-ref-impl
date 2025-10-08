@@ -10,7 +10,7 @@
 # Step 3: Run database migrations
 # -----------------------------
 echo "Running Django database migrations..."
-python manage.py makemigrations
+python manage.py makemigrations core_users
 python manage.py migrate
 
 # -----------------------------
