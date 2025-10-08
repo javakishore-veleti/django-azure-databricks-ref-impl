@@ -13,7 +13,8 @@
 set -euo pipefail
 
 # List of sub-stacks (folders with docker-compose.yml)
-STACKS=(postgres redpanda pgadmin minio) # add spark trino if needed
+# redpanda
+STACKS=(postgres kafka pgadmin minio) # add spark trino if needed
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 echo "ROOT_DIR ${ROOT_DIR}"

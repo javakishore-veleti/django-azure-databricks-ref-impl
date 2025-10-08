@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-STACKS=(postgres redpanda pgadmin minio) # keep in sync with up.sh
+# redpanda
+STACKS=(postgres kafka pgadmin minio) # keep in sync with up.sh
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="${ROOT_DIR}/.env"
@@ -26,5 +27,7 @@ main() {
 
   echo "Done Shutting Down Local Development Tech Stack Services."
 }
+
+docker volume rm zookeeper_data || true
 
 main "$@"
