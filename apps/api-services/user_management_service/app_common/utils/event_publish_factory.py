@@ -5,6 +5,8 @@ from .kafka_event_publisher import KafkaEventPublisher
 from .azure_event_publisher import AzureEventHubPublisher
 from .event_publisher_interface import EventPublisher
 
+import logging
+LOGGER = logging.getLogger(__name__)  # Logger named after the current module
 
 class EventPublishFactory:
     _cache = {}
@@ -29,18 +31,22 @@ class EventPublishFactory:
 
         # Configure the publisher based on the environment variable
         if settings.USE_AZURE:
+            LOGGER.info("Creating AzureEventHubPublisher")
+
             # Azure Event Hub publisher
             publisher = AzureEventHubPublisher(
                 connection_string=settings.AZURE_EVENT_HUB_CONNECTION_STRING,
                 eventhub_name=event_hub_name
             )
         elif settings.USE_KAFKA:
+            LOGGER.info("Creating KafkaEventPublisher")
             # Kafka publisher for local development
             publisher = KafkaEventPublisher(
                 kafka_bootstrap_servers=settings.KAFKA_BOOTSTRAP_SERVERS,
                 eventhub_name=event_hub_name
             )
         else:
+            LOGGER.info("Creating DummyEventPublisher")
             publisher = DummyEventPublisher(eventhub_name=event_hub_name)
 
 

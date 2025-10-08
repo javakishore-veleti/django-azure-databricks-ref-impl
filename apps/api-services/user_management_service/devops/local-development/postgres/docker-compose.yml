@@ -16,5 +16,12 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+    networks:
+        - user_mgmt_dev
+
 volumes:
   pgdata:
+
+networks:
+  user_mgmt_dev:
+    driver: bridge

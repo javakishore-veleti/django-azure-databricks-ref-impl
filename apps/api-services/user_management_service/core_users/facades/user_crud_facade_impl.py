@@ -1,12 +1,13 @@
 import json
 import uuid
-
-from django.db import IntegrityError
+import logging
 
 from app_common.facades.interfaces import AppUserFacadeInterface
 from app_common.utils.event_publish_factory import EventPublishFactory
 from core_users.models import AppUser, AppUserProfile
 from app_common.dtos.dtos_users import UserCrudReq, UserCrudResp, UserEventInfo
+
+LOGGER = logging.getLogger(__name__)  # Logger named after the current module
 
 
 class UserCrudFacadeImpl(AppUserFacadeInterface):
@@ -69,7 +70,7 @@ class UserCrudFacadeImpl(AppUserFacadeInterface):
         """
 
         # Create a profile for the user
-        app_user_profile = AppUserProfile.objects.create(user=app_user)
+        app_user_profile = AppUserProfile.objects.create(user=app_user, id=str(uuid.uuid4()))
 
         # Publish CREATE event
         self._publish_user_event("CREATE", app_user)
@@ -134,6 +135,8 @@ class UserCrudFacadeImpl(AppUserFacadeInterface):
             return False  # Handle user not found
 
     def _publish_user_event(self, event_type: str, app_user: AppUser):
+        LOGGER.info("_publish_user_event STARTED")
+
         """Helper to publish user-related events."""
         # Prepare payload
         user_dict = {
@@ -155,3 +158,5 @@ class UserCrudFacadeImpl(AppUserFacadeInterface):
 
         # Publish serialized event payload
         publisher.publish_event(event_type, json.dumps(user_event.to_json()))
+
+        LOGGER.info("_publish_user_event COMPLETED")

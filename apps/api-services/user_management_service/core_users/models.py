@@ -6,8 +6,8 @@ from django.db import models
 # Create your models here.
 class AppUser(models.Model):
     id = models.CharField(max_length=36, primary_key=True, default=str(uuid.uuid4), editable=False)
-    email = models.EmailField(unique=True)
-    username = models.CharField(max_length=100, unique=True)
+    email = models.EmailField()
+    username = models.CharField(max_length=100)
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True)
     is_active = models.BooleanField(default=True)
