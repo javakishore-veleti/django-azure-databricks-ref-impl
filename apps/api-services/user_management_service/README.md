@@ -57,3 +57,25 @@ celery
 # Optional: Fast JSON handling
 orjson
 ```
+
+```shell
+
+python manage.py crontab add
+# List the registered cron jobs
+python manage.py crontab show
+
+# To remove jobs later
+python manage.py crontab remove
+```
+
+Handling Zero or Large Batches Automatically
+
+- Your consume_and_write_to_adls() implementation already:
+- Skips writes when no messages arrive. 
+- Writes in batches when messages are large. 
+- Flushes remaining messages before exit. 
+- So the cron will safely handle:
+  - 0 messages → no upload 
+  - Few messages → one small file 
+  - Millions of messages → multiple uploads in chunks
+

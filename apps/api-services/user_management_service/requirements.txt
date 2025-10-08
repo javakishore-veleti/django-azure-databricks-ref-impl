@@ -52,4 +52,5 @@ azure-eventhub
 azure-storage-blob
 azure-mgmt-datalake-store
 
-
+# TO PUSH LOCAL KAFKA MESSAGES TO AZURE BLOB STORAGE I.E. AZURE ADLS
+django-crontab

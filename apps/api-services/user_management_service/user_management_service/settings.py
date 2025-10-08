@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'api_users',
     'rest_framework',
     'drf_yasg',
+    'django_crontab'
 
 ]
 
@@ -211,3 +212,9 @@ LOGGING = {
         },
     },
 }
+
+# mkdir -p /tmp/kishore/hands_on/user_mgmt/django_cron_jobs/user_sync_logs
+# TO PUSH LOCAL KAFKA MESSAGES TO AZURE BLOB STORAGE I.E. AZURE ADLS
+CRONJOBS = [
+    ('*/1 * * * *', 'core_users.cron.consume_and_write_to_adls', '>> /tmp/kishore/hands_on/user_mgmt/django_cron_jobs/user_sync_logs/kafka_to_adls.log 2>&1')
+]

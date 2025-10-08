@@ -13,6 +13,11 @@ echo "Running Django database migrations..."
 python manage.py makemigrations core_users
 python manage.py migrate
 
+# Below is for Crontab to publish Kafka messages to Azure Blob Storage ADLS
+mkdir -p ~/logs
+chmod 777 ~/logs
+mkdir -p /tmp/kishore/hands_on/user_mgmt/django_cron_jobs/user_sync_logs
+
 # -----------------------------
 # Step 4: Collect static files (optional for production)
 # -----------------------------
