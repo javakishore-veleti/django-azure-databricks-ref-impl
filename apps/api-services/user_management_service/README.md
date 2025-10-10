@@ -79,3 +79,6 @@ Handling Zero or Large Batches Automatically
   - Few messages → one small file 
   - Millions of messages → multiple uploads in chunks
 
+## Connecting to Postgres Database through pgAdmin
+
+Use host.docker.internal as the hostname instead of localhost or 127.0.0.1 to connect to the Postgres database running in Docker from pgAdmin on your host machine.
